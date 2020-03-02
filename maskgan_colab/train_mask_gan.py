@@ -92,7 +92,7 @@ tf.app.flags.DEFINE_string(
 tf.app.flags.DEFINE_integer('batch_size', 20, 'The batch size.')
 tf.app.flags.DEFINE_integer('vocab_size', 10000, 'The vocabulary size.')
 tf.app.flags.DEFINE_integer('sequence_length', 20, 'The sequence length.')
-tf.app.flags.DEFINE_integer('max_steps', 1000000,
+tf.app.flags.DEFINE_integer('max_steps', 10000,
                             'Maximum number of steps to run.')
 tf.app.flags.DEFINE_string(
     'mask_strategy', 'random', 'Strategy for masking the words.  Determine the '

@@ -34,7 +34,7 @@ np.set_printoptions(suppress=True)
 EOS_INDEX = 88892
 
 
-def _read_words(filename, use_prefix=True):
+def _read_words(filename, use_prefix=False):
   all_words = []
   sequence_example = tf.train.SequenceExample()
   for r in tf.python_io.tf_record_iterator(filename):

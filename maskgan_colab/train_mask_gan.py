@@ -425,7 +425,7 @@ def create_MaskGAN(hparams, is_training):
   text_summary_op = tf.summary.text('Samples', text_summary_placeholder)
 
   # Model saver.
-  saver = tf.train.Saver(keep_checkpoint_every_n_hours=1, max_to_keep=5)
+  saver = tf.train.Saver(keep_checkpoint_every_n_hours=1, max_to_keep=2)
 
   # Named tuple that captures elements of the MaskGAN model.
   Model = collections.namedtuple('Model', [

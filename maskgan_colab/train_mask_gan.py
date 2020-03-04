@@ -487,7 +487,7 @@ def get_iterator(data):
   return iterator
 
 
-def train_model(hparams, data, log_dir, log, id_to_word, data_ngram_counts):
+def train_model(hparams, data, log_dir, log, id_to_word, stop_words, data_ngram_counts):
   """Train model.
   Args:
     hparams: Hyperparameters for the MaskGAN.
@@ -1101,9 +1101,6 @@ def main(_):
 
   id_to_word = {v: k for k, v in word_to_id.iteritems()}
 
-  # making list of stopword indicies
-  stop_words = imdb_loader
-
   # Dictionary of Training Set n-gram counts.
   bigram_tuples = n_gram.find_all_ngrams(valid_data_flat, n=2)
   trigram_tuples = n_gram.find_all_ngrams(valid_data_flat, n=3)
@@ -1145,7 +1142,7 @@ def main(_):
         os.path.join(FLAGS.base_directory, 'test-log.txt'), mode='w')
 
   if FLAGS.mode == MODE_TRAIN:
-    train_model(hparams, data_set, train_dir, log, id_to_word,
+    train_model(hparams, data_set, train_dir, log, id_to_word, stop_words,
                 data_ngram_counts)
 
   elif FLAGS.mode == MODE_VALIDATION:

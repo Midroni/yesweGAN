@@ -1094,8 +1094,7 @@ def main(_):
     word_to_id = ptb_loader.build_vocab(
         os.path.join(FLAGS.data_dir, 'ptb.train.txt'))
   elif FLAGS.data_set == 'imdb':
-    word_to_id = imdb_loader.build_vocab(
-        os.path.join(FLAGS.data_dir, 'vocab.txt'))
+    word_to_id = imdb_loader.build_vocab(os.path.join(FLAGS.data_dir, 'vocab.txt'))
     # making list of stopword indicies
     stop_words = imdb_loader.build_stopword_dict(word_to_id)
 

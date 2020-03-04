@@ -482,8 +482,8 @@ def get_iterator(data):
                                        FLAGS.sequence_length,
                                        FLAGS.epoch_size_override)
   elif FLAGS.data_set == 'imdb':
-    iterator = imdb_loader.imdb_iterator(data, FLAGS.batch_size,
-                                         FLAGS.sequence_length)
+    iterator = imdb_loader.imdb_iterator_custom(data, FLAGS.batch_size,
+                                         FLAGS.sequence_length, stop_words)
   return iterator
 
 
@@ -602,13 +602,13 @@ def train_model(hparams, data, log_dir, log, id_to_word, data_ngram_counts):
 
             for i in range(dis_offset):
               try:
-                dis_x, dis_y, _ = next(dis_iterator)
+                dis_x, dis_y, _, p = next(dis_iterator)
               except StopIteration:
                 dis_iterator = get_iterator(data)
                 dis_initial_state_eval = zeros_state
-                dis_x, dis_y, _ = next(dis_iterator)
+                dis_x, dis_y, _, p = next(dis_iterator)
 
-              p = model_utils.generate_mask()
+              #p = model_utils.generate_mask()
 
               # Construct the train feed.
               train_feed = {
@@ -645,17 +645,17 @@ def train_model(hparams, data, log_dir, log, id_to_word, data_ngram_counts):
             for x, y, _ in iterator:
               for _ in xrange(hparams.dis_train_iterations):
                 try:
-                  dis_x, dis_y, _ = next(dis_iterator)
+                  dis_x, dis_y, _, p = next(dis_iterator)
                 except StopIteration:
                   dis_iterator = get_iterator(data)
                   dis_initial_state_eval = zeros_state
-                  dis_x, dis_y, _ = next(dis_iterator)
+                  dis_x, dis_y, _, p = next(dis_iterator)
 
                   if FLAGS.data_set == 'ptb':
                     [dis_initial_state_eval] = sess.run(
                         [model.fake_gen_initial_state])
 
-                p = model_utils.generate_mask()
+                #p = model_utils.generate_mask()
 
                 # Construct the train feed.
                 train_feed = {
@@ -680,7 +680,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, data_ngram_counts):
                     [model.fake_gen_final_state], train_feed)
 
               # Randomly mask out tokens.
-              p = model_utils.generate_mask()
+              #p = model_utils.generate_mask()
 
               # Construct the train feed.
               train_feed = {model.inputs: x, model.targets: y, model.present: p}
@@ -882,7 +882,7 @@ def evaluate_once(data, sv, model, sess, train_dir, log, id_to_word,
 
   iterator = get_iterator(data)
 
-  for x, y, _ in iterator:
+  for x, y, _, p in iterator:
     if FLAGS.eval_language_model:
       is_present_rate = 0.
     else:
@@ -893,7 +893,7 @@ def evaluate_once(data, sv, model, sess, train_dir, log, id_to_word,
                                     model.new_rate, is_present_rate)
 
     # Randomly mask out tokens.
-    p = model_utils.generate_mask()
+    #p = model_utils.generate_mask()
 
     eval_feed = {model.inputs: x, model.targets: y, model.present: p}
 
@@ -1096,7 +1096,13 @@ def main(_):
   elif FLAGS.data_set == 'imdb':
     word_to_id = imdb_loader.build_vocab(
         os.path.join(FLAGS.data_dir, 'vocab.txt'))
+    # making list of stopword indicies
+    stop_words = imdb_loader.build_stopword_dict(word_to_id)
+
   id_to_word = {v: k for k, v in word_to_id.iteritems()}
+
+  # making list of stopword indicies
+  stop_words = imdb_loader
 
   # Dictionary of Training Set n-gram counts.
   bigram_tuples = n_gram.find_all_ngrams(valid_data_flat, n=2)

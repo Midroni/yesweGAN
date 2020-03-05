@@ -483,7 +483,7 @@ def get_iterator(data):
                                        FLAGS.epoch_size_override)
   elif FLAGS.data_set == 'imdb':
     iterator = imdb_loader.imdb_iterator_custom(data, FLAGS.batch_size,
-                                         FLAGS.sequence_length, stop_words)
+                                         FLAGS.sequence_length)
   return iterator
 
 

@@ -202,6 +202,6 @@ def imdb_iterator_custom(raw_data, batch_size, num_steps, stop_words_id, epoch_s
       x[i] = final_x
       y[i] = final_y
       p[i] = final_p
-      print(x)
-      print(p)
+    print(x)
+    print(p)
     yield (x, y, w, p)

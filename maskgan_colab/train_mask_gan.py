@@ -475,7 +475,7 @@ def compute_arithmetic_average(percent_captured):
   return res / float(N)
 
 
-def get_iterator(data):
+def get_iterator(data, stop_words_id):
   """Return the data iterator."""
   if FLAGS.data_set == 'ptb':
     iterator = ptb_loader.ptb_iterator(data, FLAGS.batch_size,
@@ -483,11 +483,11 @@ def get_iterator(data):
                                        FLAGS.epoch_size_override)
   elif FLAGS.data_set == 'imdb':
     iterator = imdb_loader.imdb_iterator_custom(data, FLAGS.batch_size,
-                                         FLAGS.sequence_length)
+                                         FLAGS.sequence_length, stop_words_id)
   return iterator
 
 
-def train_model(hparams, data, log_dir, log, id_to_word, stop_words, data_ngram_counts):
+def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngram_counts):
   """Train model.
   Args:
     hparams: Hyperparameters for the MaskGAN.
@@ -598,13 +598,13 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words, data_ngram_
               dis_offset = 1
             else:
               dis_offset = FLAGS.task * 1000 + 1
-            dis_iterator = get_iterator(data)
+            dis_iterator = get_iterator(data, stop_words_id)
 
             for i in range(dis_offset):
               try:
                 dis_x, dis_y, _, p = next(dis_iterator)
               except StopIteration:
-                dis_iterator = get_iterator(data)
+                dis_iterator = get_iterator(data, stop_words_id)
                 dis_initial_state_eval = zeros_state
                 dis_x, dis_y, _, p = next(dis_iterator)
 
@@ -629,7 +629,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words, data_ngram_
                     [model.fake_gen_final_state], train_feed)
 
             ## Training loop.
-            iterator = get_iterator(data)
+            iterator = get_iterator(data, stop_words_id)
             gen_initial_state_eval = zeros_state
 
             if FLAGS.ps_tasks > 0:
@@ -638,7 +638,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words, data_ngram_
                 try:
                   next(iterator)
                 except StopIteration:
-                  dis_iterator = get_iterator(data)
+                  dis_iterator = get_iterator(data, stop_words_id)
                   dis_initial_state_eval = zeros_state
                   next(dis_iterator)
 
@@ -647,7 +647,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words, data_ngram_
                 try:
                   dis_x, dis_y, _, p = next(dis_iterator)
                 except StopIteration:
-                  dis_iterator = get_iterator(data)
+                  dis_iterator = get_iterator(data, stop_words_id)
                   dis_initial_state_eval = zeros_state
                   dis_x, dis_y, _, p = next(dis_iterator)
 
@@ -834,7 +834,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words, data_ngram_
 
 
 def evaluate_once(data, sv, model, sess, train_dir, log, id_to_word,
-                  data_ngram_counts, eval_saver):
+                  data_ngram_counts, eval_saver, stop_words_id):
   """Evaluate model for a number of steps.
   Args:
     data:  Dataset.
@@ -880,7 +880,7 @@ def evaluate_once(data, sv, model, sess, train_dir, log, id_to_word,
     tf.logging.info('Overriding is_present_rate=0. for evaluation.')
     print('Overriding is_present_rate=0. for evaluation.')
 
-  iterator = get_iterator(data)
+  iterator = get_iterator(data, stop_words_id)
 
   for x, y, _, p in iterator:
     if FLAGS.eval_language_model:
@@ -998,7 +998,7 @@ def evaluate_once(data, sv, model, sess, train_dir, log, id_to_word,
 
 
 def evaluate_model(hparams, data, train_dir, log, id_to_word,
-                   data_ngram_counts):
+                   data_ngram_counts, stop_words_id):
   """Evaluate MaskGAN model.
   Args:
     hparams:  Hyperparameters for the MaskGAN.
@@ -1056,7 +1056,7 @@ def evaluate_model(hparams, data, train_dir, log, id_to_word,
       tf.logging.info('Before sv.Loop.')
       sv.Loop(FLAGS.eval_interval_secs, evaluate_once,
               (data, sv, model, sess, train_dir, log, id_to_word,
-               data_ngram_counts, eval_saver))
+               data_ngram_counts, eval_saver, stop_words_id))
 
       sv.WaitForStop()
       tf.logging.info('sv.Stop().')
@@ -1095,7 +1095,7 @@ def main(_):
         os.path.join(FLAGS.data_dir, 'ptb.train.txt'))
   elif FLAGS.data_set == 'imdb':
     word_to_id = imdb_loader.build_vocab(os.path.join(FLAGS.data_dir, 'vocab.txt'))
-    stop_words = imdb_loader.build_stopword_dict(word_to_id)# making list of stopword indicies
+    stop_words_id = imdb_loader.build_stopword_dict(word_to_id)# making list of stopword indicies
 
   id_to_word = {v: k for k, v in word_to_id.iteritems()}
 
@@ -1140,19 +1140,19 @@ def main(_):
         os.path.join(FLAGS.base_directory, 'test-log.txt'), mode='w')
 
   if FLAGS.mode == MODE_TRAIN:
-    train_model(hparams, data_set, train_dir, log, id_to_word, stop_words,
+    train_model(hparams, data_set, train_dir, log, id_to_word, stop_words_id,
                 data_ngram_counts)
 
   elif FLAGS.mode == MODE_VALIDATION:
     evaluate_model(hparams, data_set, train_dir, log, id_to_word,
-                   data_ngram_counts)
+                   data_ngram_counts, stop_words_id)
   elif FLAGS.mode == MODE_TRAIN_EVAL:
     evaluate_model(hparams, data_set, train_dir, log, id_to_word,
-                   data_ngram_counts)
+                   data_ngram_counts, stop_words_id)
 
   elif FLAGS.mode == MODE_TEST:
     evaluate_model(hparams, data_set, train_dir, log, id_to_word,
-                   data_ngram_counts)
+                   data_ngram_counts, stop_words_id)
 
   else:
     raise NotImplementedError

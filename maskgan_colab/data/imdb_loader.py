@@ -192,13 +192,14 @@ def imdb_iterator_custom(raw_data, batch_size, num_steps, stop_words, epoch_size
         final_y = final_x[1:] + [EOS_INDEX]
         w[i] = [1] * len(example) + [0] * to_fill_in
 
-      for i, x in enumerate(final_x):
+      for k, x in enumerate(final_x):
           if x in stop_words:
-            p[i] = False
+            p_tmp[k] = False
           else:
-            p[i] = True
+            p_tmp[k] = True
 
       x[i] = final_x
       y[i] = final_y
+      p[i] = p_tmp
 
     yield (x, y, w, p)

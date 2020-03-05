@@ -73,7 +73,6 @@ def build_stopword_dict(word_to_id):
     for word in stop_words:
         if word in word_to_id:
             stop_words_id.append(word_to_id[word])
-    print(stop_words_id)
     return stop_words_id
 
 
@@ -203,5 +202,6 @@ def imdb_iterator_custom(raw_data, batch_size, num_steps, stop_words_id, epoch_s
       x[i] = final_x
       y[i] = final_y
       p[i] = final_p
-
+      print(x)
+      print(p)
     yield (x, y, w, p)

@@ -146,7 +146,7 @@ def imdb_iterator(raw_data, batch_size, num_steps, epoch_size_override=None):
     yield (x, y, w)
 
 
-def imdb_iterator_custom(raw_data, batch_size, num_steps, stop_words, epoch_size_override=None):
+def imdb_iterator_custom(raw_data, batch_size, num_steps, epoch_size_override=None):
   """Iterate on the raw IMDB data.
 
   This generates batch_size pointers into the raw IMDB data, and allows

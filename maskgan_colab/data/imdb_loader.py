@@ -70,13 +70,10 @@ def build_vocab(vocab_file):
 
 def build_stopword_dict(word_to_id):
     stop_words_id = []
-    print(len(word_to_id))
     for word in stop_words:
-
         if word in word_to_id:
-            print(word)
             stop_words_id.append(word_to_id[word])
-    print(len(stop_words_id))
+    print(stop_words_id)
     return stop_words_id
 
 
@@ -198,12 +195,16 @@ def imdb_iterator_custom(raw_data, batch_size, num_steps, stop_words_id, epoch_s
 
       for k, x_tmp in enumerate(final_x):
           if x_tmp in stop_words_id:
-            p[i,k] = False
+            final_p[k] = False
+            print('stop word:')
+            print(x_tmp)
           else:
-            p[i,k] = True
+            final_p[k] = True
+            print('not stop word:')
+            print(x_tmp)
 
       x[i] = final_x
       y[i] = final_y
-      #p[i] = p_tmp
+      p[i] = final_p
 
     yield (x, y, w, p)

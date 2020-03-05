@@ -642,7 +642,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words, data_ngram_
                   dis_initial_state_eval = zeros_state
                   next(dis_iterator)
 
-            for x, y, _ in iterator:
+            for x, y, _, p in iterator:
               for _ in xrange(hparams.dis_train_iterations):
                 try:
                   dis_x, dis_y, _, p = next(dis_iterator)

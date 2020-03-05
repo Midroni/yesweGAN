@@ -195,14 +195,9 @@ def imdb_iterator_custom(raw_data, batch_size, num_steps, stop_words_id, epoch_s
 
       final_p = np.zeros([num_steps], dtype = np.bool_)
       for k, x_tmp in enumerate(final_x):
-          print(k)
           if x_tmp in stop_words_id:
-            print('stop word:')
-            print(x_tmp)
             final_p[k] = False
           else:
-            print('not stop word:')
-            print(x_tmp)
             final_p[k] = True
 
       x[i] = final_x

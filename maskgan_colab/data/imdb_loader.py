@@ -70,11 +70,13 @@ def build_vocab(vocab_file):
 
 def build_stopword_dict(word_to_id):
     stop_words_id = []
+    print(length(word_to_id))
     for word in stop_words:
-        print(word)
+
         if word in word_to_id:
             print(word)
             stop_words_id.append(word_to_id[word])
+    print(length(stop_words_id))
     return stop_words_id
 
 

@@ -69,7 +69,7 @@ def build_vocab(vocab_file):
   return word_to_id
 
 def build_stopword_dict(word_to_id):
-    stop_words_raw
+    stop_words_raw = []
     for word in stop_words:
         if word in word_to_id:
             stop_words_raw.append(word_to_id[word])

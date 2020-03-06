@@ -609,7 +609,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
                 dis_x, dis_y, _, p = next(dis_iterator)
 
               #p = model_utils.generate_mask()
-              for i in len(p):
+              for i in range(len(p)):
                 print(dis_x(i))
                 print(p(i))
 

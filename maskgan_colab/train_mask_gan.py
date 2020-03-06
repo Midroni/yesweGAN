@@ -609,6 +609,9 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
                 dis_x, dis_y, _, p = next(dis_iterator)
 
               #p = model_utils.generate_mask()
+              for i in len(p):
+                print(dis_x(i))
+                print(p(i))
 
               # Construct the train feed.
               train_feed = {
@@ -616,6 +619,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
                   model.targets: dis_y,
                   model.present: p
               }
+              print(train_feed)
 
               if FLAGS.data_set == 'ptb':
                 # Statefulness of the Generator being used for Discriminator.

@@ -90,7 +90,7 @@ tf.app.flags.DEFINE_integer('ps_tasks', 0, """Number of tasks in the ps job.
 tf.app.flags.DEFINE_string(
     'hparams', '', 'Comma separated list of name=value hyperparameter pairs.')
 tf.app.flags.DEFINE_integer('batch_size', 20, 'The batch size.')
-tf.app.flags.DEFINE_integer('vocab_size', 10000, 'The vocabulary size.')
+tf.app.flags.DEFINE_integer('vocab_size', 69849, 'The vocabulary size.')
 tf.app.flags.DEFINE_integer('sequence_length', 20, 'The sequence length.')
 tf.app.flags.DEFINE_integer('max_steps', 10000,
                             'Maximum number of steps to run.')
@@ -738,6 +738,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, data_ngram_counts):
                 # Confirm perplexity is not infinite.
                 if (not np.isfinite(perplexity) or
                     perplexity >= FLAGS.perplexity_threshold):
+                  print(model.inputs,model.targets)
                   print('Training raising FloatingPoinError.')
                   raise FloatingPointError(
                       'Training infinite perplexity: %.3f' % perplexity)

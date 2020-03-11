@@ -73,6 +73,7 @@ MODE_TRAIN_EVAL = 'TRAIN_EVAL'
 MODE_VALIDATION = 'VALIDATION'
 MODE_TEST = 'TEST'
 
+
 ## Binary and setup FLAGS.
 tf.app.flags.DEFINE_enum(
     'mode', 'TRAIN', [MODE_TRAIN, MODE_VALIDATION, MODE_TEST, MODE_TRAIN_EVAL],
@@ -851,7 +852,7 @@ def evaluate_once(data, sv, model, sess, train_dir, log, id_to_word,
   """
   tf.logging.info('Evaluate Once.')
   # Load the last model checkpoint, or initialize the graph.
-  model_save_path = tf.latest_checkpoint(train_dir)
+  model_save_path = tf.train.latest_checkpoint(train_dir)
   if not model_save_path:
     tf.logging.warning('No checkpoint yet in: %s', train_dir)
     return
@@ -1015,11 +1016,11 @@ def evaluate_model(hparams, data, train_dir, log, id_to_word,
   is_training = False
 
   if FLAGS.mode == MODE_VALIDATION:
-    logdir = FLAGS.base_directory + '/validation'
+    logdir = FLAGS.base_directory 
   elif FLAGS.mode == MODE_TRAIN_EVAL:
-    logdir = FLAGS.base_directory + '/train_eval'
+    logdir = FLAGS.base_directory
   elif FLAGS.mode == MODE_TEST:
-    logdir = FLAGS.base_directory + '/test'
+    logdir = FLAGS.base_directory
   else:
     raise NotImplementedError
 
@@ -1051,7 +1052,7 @@ def evaluate_model(hparams, data, train_dir, log, id_to_word,
       evaluation_variables = tf.trainable_variables()
       evaluation_variables.append(model.global_step)
       eval_saver = tf.train.Saver(var_list=evaluation_variables)
-      sv = tf.Supervisor(logdir=logdir)
+      sv = tf.train.Supervisor(logdir=logdir)
       sess = sv.PrepareSession(FLAGS.eval_master, start_standard_services=False)
 
       tf.logging.info('Before sv.Loop.')

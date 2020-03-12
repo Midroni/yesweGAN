@@ -602,22 +602,22 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
 
             for i in range(dis_offset):
               try:
-                dis_x, dis_y, _, p = next(dis_iterator)
+                dis_x, dis_y, _, dis_p = next(dis_iterator)
               except StopIteration:
                 dis_iterator = get_iterator(data, stop_words_id)
                 dis_initial_state_eval = zeros_state
-                dis_x, dis_y, _, p = next(dis_iterator)
+                dis_x, dis_y, _, dis_p = next(dis_iterator)
 
               #p = model_utils.generate_mask()
-              for i in range(len(p)):
+              for i in range(len(dis_p)):
                 print(dis_x[i])
-                print(p[i])
+                print(dis_p[i])
 
               # Construct the train feed.
               train_feed = {
                   model.inputs: dis_x,
                   model.targets: dis_y,
-                  model.present: p
+                  model.present: dis_p
               }
               print(train_feed)
 
@@ -649,11 +649,11 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
             for x, y, _, p in iterator:
               for _ in xrange(hparams.dis_train_iterations):
                 try:
-                  dis_x, dis_y, _, p = next(dis_iterator)
+                  dis_x, dis_y, _, dis_p = next(dis_iterator)
                 except StopIteration:
                   dis_iterator = get_iterator(data, stop_words_id)
                   dis_initial_state_eval = zeros_state
-                  dis_x, dis_y, _, p = next(dis_iterator)
+                  dis_x, dis_y, _, dis_p = next(dis_iterator)
 
                   if FLAGS.data_set == 'ptb':
                     [dis_initial_state_eval] = sess.run(
@@ -665,7 +665,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
                 train_feed = {
                     model.inputs: dis_x,
                     model.targets: dis_y,
-                    model.present: p
+                    model.present: dis_p
                 }
 
                 # Statefulness for the Discriminator.
@@ -687,7 +687,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
               #p = model_utils.generate_mask()
 
               # Construct the train feed.
-              train_feed = {model.inputs: x, model.targets: y, model.present: p}
+              train_feed = {model.inputs: x, model.targets: y, model.present: p} # what the fuck is going on hereree
 
               # Statefulness for Generator.
               if FLAGS.data_set == 'ptb':

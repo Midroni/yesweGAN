@@ -660,10 +660,11 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
 
                 #p = model_utils.generate_mask()
                 for i in range(len(dis_p)):
-                    if (dis_x[i] in stop_words_id and dis_p[i]) or (not(dis_x[i] in stop_words_id) and not dis_p[i]):
-                        print(yep)
-                    else:
-                        print(nope)
+                    for j in range(len(dis_p[i]))
+                        if (dis_x[i][j] in stop_words_id and dis_p[i][j]) or (not(dis_x[i][j] in stop_words_id) and not dis_p[i][j]):
+                            print(yep)
+                        else:
+                            print(nope)
                 # Construct the train feed.
                 train_feed = {
                     model.inputs: dis_x,

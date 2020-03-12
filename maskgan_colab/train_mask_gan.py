@@ -619,7 +619,6 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
                   model.targets: dis_y,
                   model.present: dis_p
               }
-              print(train_feed)
 
               if FLAGS.data_set == 'ptb':
                 # Statefulness of the Generator being used for Discriminator.
@@ -660,7 +659,11 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
                         [model.fake_gen_initial_state])
 
                 #p = model_utils.generate_mask()
-
+                for i in range(len(dis_p)):
+                    if (dis_x[i] in stop_words_id and dis_p[i]) or (not(dis_x[i] in stop_words_id) and not dis_p[i]):
+                        print(yep)
+                    else:
+                        print(nope)
                 # Construct the train feed.
                 train_feed = {
                     model.inputs: dis_x,

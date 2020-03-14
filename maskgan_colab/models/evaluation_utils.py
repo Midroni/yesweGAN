@@ -190,12 +190,7 @@ def generate_logs(sess, model, log, id_to_word, feed):
   logs."""
   # Impute Sequences.
   print('generating loggggggggggggggggs')
-  for i in range(len(dis_p)):
-      for j in range(len(dis_p[i])):
-          if (dis_x[i][j] in stop_words_id and not dis_p[i][j]) or (not(dis_x[i][j] in stop_words_id) and dis_p[i][j]):
-              print('yep')
-          else:
-              print('nope')
+  print(feed)
   [
       p, sequence_eval, fake_predictions_eval, fake_cross_entropy_losses_eval,
       fake_logits_eval

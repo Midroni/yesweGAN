@@ -191,6 +191,7 @@ def generate_logs(sess, model, log, id_to_word, feed):
   # Impute Sequences.
   print('generating loggggggggggggggggs')
   print(feed)
+  
   [
       p, sequence_eval, fake_predictions_eval, fake_cross_entropy_losses_eval,
       fake_logits_eval

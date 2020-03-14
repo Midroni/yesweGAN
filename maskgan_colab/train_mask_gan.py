@@ -499,6 +499,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
       data_set.
   """
   print('Training model.')
+  print(stop_words_id)
   tf.logging.info('Training model.')
 
   # Boolean indicating operational mode.

@@ -189,6 +189,9 @@ def generate_logs(sess, model, log, id_to_word, feed):
   """Impute Sequences using the model for a particular feed and send it to
   logs."""
   # Impute Sequences.
+
+
+
   [
       p, sequence_eval, fake_predictions_eval, fake_cross_entropy_losses_eval,
       fake_logits_eval
@@ -198,6 +201,8 @@ def generate_logs(sess, model, log, id_to_word, feed):
           model.fake_cross_entropy_losses, model.fake_logits
       ],
       feed_dict=feed)
+
+
 
   # Convert Discriminator linear layer to probability.
   fake_prob_eval = expit(fake_predictions_eval)

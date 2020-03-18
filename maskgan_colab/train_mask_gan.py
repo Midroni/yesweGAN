@@ -499,7 +499,7 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
       data_set.
   """
   print('Training model.')
-  print(stop_words_id)
+
   tf.logging.info('Training model.')
 
   # Boolean indicating operational mode.
@@ -610,9 +610,10 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
                 dis_x, dis_y, _, dis_p = next(dis_iterator)
 
               #p = model_utils.generate_mask()
-              for i in range(len(dis_p)):
-                print(dis_x[i])
-                print(dis_p[i])
+
+              #for i in range(len(dis_p)):
+                #print(dis_x[i])
+                #print(dis_p[i])
 
               # Construct the train feed.
               train_feed = {
@@ -660,12 +661,12 @@ def train_model(hparams, data, log_dir, log, id_to_word, stop_words_id, data_ngr
                         [model.fake_gen_initial_state])
 
                 #p = model_utils.generate_mask()
-                for i in range(len(dis_p)):
-                    for j in range(len(dis_p[i])):
-                        if (dis_y[i][j] in stop_words_id and not dis_p[i][j]) or (not(dis_y[i][j] in stop_words_id) and dis_p[i][j]):
-                            print('yep')
-                        else:
-                            print('nope')
+                #for i in range(len(dis_p)):
+                #    for j in range(len(dis_p[i])):
+                #        if (dis_y[i][j] in stop_words_id and not dis_p[i][j]) or (not(dis_y[i][j] in stop_words_id) and dis_p[i][j]):
+                #            print('yep')
+                #        else:
+                #            print('nope')
                 # Construct the train feed.
                 train_feed = {
                     model.inputs: dis_x,

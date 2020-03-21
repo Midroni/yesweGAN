@@ -66,15 +66,15 @@ tf.app.flags.DEFINE_integer('number_epochs', 1,
 FLAGS = tf.app.flags.FLAGS
 
 
-def get_iterator(data):
+def get_iterator(data, stop_words_id):
   """Return the data iterator."""
   if FLAGS.data_set == 'ptb':
     iterator = ptb_loader.ptb_iterator(data, FLAGS.batch_size,
                                        FLAGS.sequence_length,
                                        FLAGS.epoch_size_override)
   elif FLAGS.data_set == 'imdb':
-    iterator = imdb_loader.imdb_iterator(data, FLAGS.batch_size,
-                                         FLAGS.sequence_length)
+    iterator = imdb_loader.imdb_iterator_custom(data, FLAGS.batch_size,
+                                         FLAGS.sequence_length, stop_words_id)
   return iterator
 
 
@@ -141,7 +141,7 @@ def generate_logs(sess, model, log, id_to_word, feed):
   return samples
 
 
-def generate_samples(hparams, data, id_to_word, log_dir, output_file):
+def generate_samples(hparams, data, id_to_word, log_dir, output_file, stop_words_id):
   """"Generate samples.
 
     Args:
@@ -195,8 +195,8 @@ def generate_samples(hparams, data, id_to_word, log_dir, output_file):
       for n in xrange(FLAGS.number_epochs):
         print('Epoch number: %d' % n)
         # print('Percent done: %.2f' % float(n) / float(FLAGS.number_epochs))
-        iterator = get_iterator(data)
-        for x, y, _ in iterator:
+        iterator = get_iterator(data, stop_words_id)
+        for x, y, _, p in iterator:
           if FLAGS.eval_language_model:
             is_present_rate = 0.
           else:
@@ -208,7 +208,7 @@ def generate_samples(hparams, data, id_to_word, log_dir, output_file):
                                           model.new_rate, is_present_rate)
 
           # Randomly mask out tokens.
-          p = model_utils.generate_mask()
+          #p = model_utils.generate_mask()
 
           eval_feed = {model.inputs: x, model.targets: y, model.present: p}
 
@@ -269,12 +269,14 @@ def main(_):
   elif FLAGS.data_set == 'imdb':
     word_to_id = imdb_loader.build_vocab(
         os.path.join(FLAGS.data_dir, 'vocab.txt'))
+    stop_words_id = imdb_loader.build_stopword_dict(word_to_id)# making list of stopword indicies
+
   id_to_word = {v: k for k, v in word_to_id.iteritems()}
 
   FLAGS.vocab_size = len(id_to_word)
   print('Vocab size: %d' % FLAGS.vocab_size)
 
-  generate_samples(hparams, data_set, id_to_word, log_dir, output_file)
+  generate_samples(hparams, data_set, id_to_word, log_dir, output_file, stop_words_id)
 
 
 if __name__ == '__main__':

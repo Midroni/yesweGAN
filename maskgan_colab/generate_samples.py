@@ -14,7 +14,6 @@
 # ==============================================================================
 
 """Generate samples from the MaskGAN.
-
 Launch command:
   python generate_samples.py
   --data_dir=/tmp/data/imdb  --data_set=imdb
@@ -109,12 +108,32 @@ def write_unmasked_log(log, id_to_word, sequence_eval):
   return samples
 
 
-def write_masked_log(log, id_to_word, sequence_eval, present_eval):
+def write_masked_log(log, id_to_word, sequence_eval, present_eval, inputs_eval):
   indices_arr = np.asarray(sequence_eval)
+  targets_arr = np.asarray(inputs_eval)
+
   samples = convert_to_human_readable(id_to_word, indices_arr, present_eval,
                                       FLAGS.batch_size)
+
+  targets_readable = convert_to_human_readable(id_to_word, targets_arr, present_eval,
+                                      FLAGS.batch_size)
+  
+  log.write('Originals: ')
+  log.write('\n')
+  for sample in targets_readable:
+    log.write(sample)
+    log.write('\n')
+
+  log.write('\n')
+  log.write('Generated: ')
+  log.write('\n')
   for sample in samples:
-    log.write(sample + '\n')
+    log.write(sample)
+    log.write('\n')
+  log.write('\n')
+  log.write('\n')
+  log.write('\n')
+
   log.flush()
   return samples
 
@@ -135,7 +154,7 @@ def generate_logs(sess, model, log, id_to_word, feed):
   p = np.concatenate((np.ones((FLAGS.batch_size, 1)), p), axis=1)
 
   if FLAGS.output_masked_logs:
-    samples = write_masked_log(log, id_to_word, sequence_eval, p)
+    samples = write_masked_log(log, id_to_word, sequence_eval, p, inputs_eval)
   else:
     samples = write_unmasked_log(log, id_to_word, sequence_eval)
   return samples
@@ -143,7 +162,6 @@ def generate_logs(sess, model, log, id_to_word, feed):
 
 def generate_samples(hparams, data, id_to_word, log_dir, output_file, stop_words_id):
   """"Generate samples.
-
     Args:
       hparams:  Hyperparameters for the MaskGAN.
       data: Data to evaluate.

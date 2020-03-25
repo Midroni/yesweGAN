@@ -31,7 +31,7 @@ tf.app.flags.DEFINE_boolean('prefix_label', True, 'Vocabulary file.')
 np.set_printoptions(precision=3)
 np.set_printoptions(suppress=True)
 
-EOS_INDEX = 69849
+EOS_INDEX = 69847
 
 
 def _read_words(filename, use_prefix=False):
